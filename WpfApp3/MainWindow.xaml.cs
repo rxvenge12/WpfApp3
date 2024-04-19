@@ -21,7 +21,7 @@ namespace WpfApp3
             try
             {
                 // Создание объекта OneDimensionalArray с использованием второго конструктора
-                OneDimensionalArray array = new OneDimensionalArray(0.5, 10);
+                OneDimensionalArray<double> array = new OneDimensionalArray<double>(0.5, 10);
 
                 // Вывод количества элементов меньше 0.2
                 int count = array.CountElementsLessThanPointTwo;
@@ -42,21 +42,19 @@ namespace WpfApp3
     /// <summary>
     /// Класс для работы с одномерным массивом
     /// </summary>
-    public class OneDimensionalArray
+    public class OneDimensionalArray<T>
     {
-        private double[] array;
+        private T[] array;
 
         /// <summary>
         /// Конструктор для создания массива заданного размера
         /// </summary>
         public OneDimensionalArray(int size)
         {
-            // Проверка на некорректный размер массива
             if (size <= 0)
                 throw new ArgumentException("Size must be greater than zero.");
 
-            // Выделение памяти под массив
-            array = new double[size];
+            array = new T[size];
         }
 
         /// <summary>
@@ -64,16 +62,13 @@ namespace WpfApp3
         /// </summary>
         public OneDimensionalArray(double x, int size)
         {
-            // Проверка на некорректный размер массива
             if (size <= 0)
                 throw new ArgumentException("Size must be greater than zero.");
 
-            // Выделение памяти под массив
-            array = new double[size];
-            // Заполнение массива значениями ряда Тейлора для ln x
+            array = new T[size];
             for (int i = 0; i < size; i++)
             {
-                array[i] = Math.Log(x + i);
+                array[i] = (T)Convert.ChangeType(Math.Log(x + i), typeof(T));
             }
         }
 
@@ -84,17 +79,12 @@ namespace WpfApp3
         {
             get
             {
-                // Инициализация счетчика элементов меньше 0.2
                 int count = 0;
-                // Перебор всех элементов массива
                 foreach (var item in array)
                 {
-                    // Проверка, является ли текущий элемент меньше 0.2
-                    if (item < 0.2)
-                        // Если да, увеличиваем счетчик
+                    if (Convert.ToDouble(item) < 0.2)
                         count++;
                 }
-                // Возвращаем количество элементов меньше 0.2
                 return count;
             }
         }
@@ -104,20 +94,14 @@ namespace WpfApp3
         /// </summary>
         public double SumOfAbsoluteValuesBeforeFirstZero()
         {
-            // Инициализация переменной для хранения суммы модулей
             double sum = 0;
-            // Перебор всех элементов массива
-            for (int i = 0; i < array.Length; i++)
+            foreach (var item in array)
             {
-                // Проверка, является ли текущий элемент равным нулю
-                if (array[i] == 0)
-                    // Если да, завершаем цикл
+                if (Convert.ToDouble(item) == 0)
                     break;
 
-                // Добавление модуля текущего элемента к сумме
-                sum += Math.Abs(array[i]);
+                sum += Math.Abs(Convert.ToDouble(item));
             }
-            // Возвращаем сумму модулей элементов до первого нуля
             return sum;
         }
     }
